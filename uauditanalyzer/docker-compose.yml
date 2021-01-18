@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+  uanlz_log2json:
+    image: d0ck3rt3k1umhub/uanlz_log2json:latest
+    ports:
+      - 16514:16514
+      - 10514:10514
+    volumes:
+      - /etc/uauditanalyzer/uanlz_log2json:/etc/uauditanalyzer/uanlz_log2json
+    depends_on:
+      - uanlz_web
+  uanlz_alert:
+     image: d0ck3rt3k1umhub/uanlz_alert
+     volumes:
+       - /etc/uauditanalyzer/uanlz_alert:/etc/uauditanalyzer/uanlz_alert
+     depends_on:
+       - uanlz_web
+  uanlz_web:
+    image: d0ck3rt3k1umhub/uanlz_web:latest
+    ports:
+      - 33000:33000
+    volumes:
+      - /etc/uauditanalyzer/uanlz_web:/etc/uauditanalyzer/uanlz_web
+
+
+
