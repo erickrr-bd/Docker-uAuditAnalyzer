@@ -29,10 +29,17 @@ echo 'Do you want to install Docker-uAuditAnalyzer2 on your computer (Y/N)?'
 read opc
 if [ $opc = "Y" ] || [ $opc = "y" ]; then
 	reg_exp_port='^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
-	echo 'Do you want to install docker-compose on your computer (Y/N)?'
+	echo 'Do you want to install docker and docker-compose on your computer (Y/N)?'
 	read opc_dc
 	if [ $opc_dc = "Y" ] || [ $opc_dc = "y" ]; then
-		dnf install curl
+		dnf install curl -y
+		dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo -y
+		dnf config-manager --enable docker-ce-stable -y
+		dnf check-update -y
+		dnf install docker-ce docker-ce-cli containerd.io --nobest -y
+		systemctl daemon-reload
+		systemctl enable docker
+		systemctl start docker
 		curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 		chmod +x /usr/local/bin/docker-compose
 		ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
