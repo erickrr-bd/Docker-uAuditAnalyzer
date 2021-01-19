@@ -1,6 +1,5 @@
 #! /bin/bash
 
-
 function valid_ip(){
     local  ip=$1
     local  stat=1
@@ -17,18 +16,19 @@ function valid_ip(){
 }
 
 clear
-echo "©2021 Tekium. All rights reserved."
+echo -e "\e[96m©2021 Tekium. All rights reserved.\e[0m"
 echo ''
-echo 'Installer for Docker-uAuditAnalyzer2 v1.0'
+echo -e '\e[96mInstaller for Docker-uAuditAnalyzer2 v1.0\e[0m'
 echo ''
-echo 'Author: Erick Rodríguez erickrr.tbd93@gmail.com'
+echo -e '\e[96mAuthor: Erick Rodríguez erickrr.tbd93@gmail.com\e[0m'
 echo ''
-echo 'License: GPLv3'
+echo -e '\e[96mLicense: GPLv3\e[0m'
 echo ''
 echo 'Do you want to install Docker-uAuditAnalyzer2 on your computer (Y/N)?'
 read opc
 if [ $opc = "Y" ] || [ $opc = "y" ]; then
 	reg_exp_port='^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
+	reg_exp_ip='^(?:(?:[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}(?:[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^localhost$'
 	echo 'Do you want to install docker and docker-compose on your computer (Y/N)?'
 	read opc_dc
 	if [ $opc_dc = "Y" ] || [ $opc_dc = "y" ]; then
@@ -43,33 +43,33 @@ if [ $opc = "Y" ] || [ $opc = "y" ]; then
 		curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 		chmod +x /usr/local/bin/docker-compose
 		ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-		echo 'Docker-compose installation successful...'
+		echo -e '\e[92mDocker and Docker-Compose have been installed on the computer...\e[0m'
 	fi
 	echo ''
-	echo 'Installing and configuring Docker-uAuditAnalyzer2...'
+	echo -e '\e[92mInstalling and configuring Docker-uAuditAnalyzer2...\e[0m'
 	echo ''
 	cp -r uauditanalyzer /etc
-	aux_bool=true
-	while [ aux_bool ]; do
+	while [ true ]; do
 		echo 'Enter the IP address where uAuditAnalyzer will send the logs:'
 		read ip
 		if valid_ip $ip; then
 			break
 		else
-			echo 'Enter a valid IP address'
+			echo -e '\e[0;31mEnter a valid IP address\e[0m'
+			echo ''
 		fi
 	done
 	echo ''
 	aux="s/127.0.0.1/$ip/g"
 	sed -i $aux /etc/uauditanalyzer/uanlz_log2json/dispatchers.d/remotelog.ini
-	aux2_bool=true
-	while [ aux2_bool ]; do
+	while [ true ]; do
 		echo 'Enter the port through which uanlz_log2json will receive the auditd logs:'
 		read port_rl
 		if [[ $port_rl =~ $reg_exp_port ]]; then
 			break
 		else
-			echo 'Enter a valid port'
+			echo -e '\e[0;31mEnter a valid port\e[0m'
+			echo ''
 		fi
 	done
 	echo ''
@@ -81,7 +81,8 @@ if [ $opc = "Y" ] || [ $opc = "y" ]; then
                 if [[ $port_sl =~ $reg_exp_port ]]; then
                         break
                 else
-                        echo 'Enter a valid port'
+                        echo -e '\e[0;31mEnter a valid port\e[0m'
+			echo ''
                 fi
         done
 	echo '' 
@@ -93,7 +94,8 @@ if [ $opc = "Y" ] || [ $opc = "y" ]; then
                 if [[ $port_web =~ $reg_exp_port ]]; then
                         break
                 else
-                        echo 'Enter a valid port'
+                        echo -e '\e[0;31mEnter a valid port\e[0m'
+			echo ''
                 fi
         done
 	echo ''
@@ -101,7 +103,7 @@ if [ $opc = "Y" ] || [ $opc = "y" ]; then
         sed -i $aux4 /etc/uauditanalyzer/docker-compose.yml
 	sleep 5
 	echo ''
-	echo 'Creating API Keys necessary for the operation of the application...'
+	echo -e '\e[92mCreating API Keys necessary for the operation of the application...\e[0m'
 	apik_log2json=$(cat /dev/random | tr -dc '[:alpha:]' | head -c 25; echo)
 	apik_alert=$(cat /dev/random | tr -dc '[:alpha:]' | head -c 25; echo)
 	aux_2="s/REPLACEME_XABCXAPIX_ALERTS/$apik_alert/g"
@@ -112,7 +114,7 @@ if [ $opc = "Y" ] || [ $opc = "y" ]; then
 	sed -i  $aux_3 /etc/uauditanalyzer/uanlz_web/config.ini
 	sleep 5
 	echo ''
-	echo 'Installation and configuration of Docker-uAuditAnalyzer2 completed successfully...'
+	echo -e '\e[92mInstallation and configuration of Docker-uAuditAnalyzer2 completed successfully...\e[0m'
 else
 	clear
 	exit
