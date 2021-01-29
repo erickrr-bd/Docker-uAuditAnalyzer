@@ -24,14 +24,19 @@ echo -e '\e[96mAuthor: Erick Rodríguez erickrr.tbd93@gmail.com\e[0m'
 echo ''
 echo -e '\e[96mLicense: GPLv3\e[0m'
 echo ''
+echo -e "\e[1;33m---------------------------------------------------------------------------------------------------------------------------\e[0m"
+echo ''
 echo 'Do you want to install Docker-uAuditAnalyzer2 on your computer (Y/N)?'
 read opc
 if [ $opc = "Y" ] || [ $opc = "y" ]; then
 	reg_exp_port='^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$'
 	reg_exp_ip='^(?:(?:[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}(?:[1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$|^localhost$'
+	echo ''
 	echo 'Do you want to install docker and docker-compose on your computer (Y/N)?'
 	read opc_dc
 	if [ $opc_dc = "Y" ] || [ $opc_dc = "y" ]; then
+		echo ''
+		echo -e '\e[92mStarting the Docker and Docker-Compose installation...\e[0m'
 		dnf install curl -y
 		dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo -y
 		dnf config-manager --enable docker-ce-stable -y
@@ -43,12 +48,18 @@ if [ $opc = "Y" ] || [ $opc = "y" ]; then
 		curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 		chmod +x /usr/local/bin/docker-compose
 		ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+		echo ''
 		echo -e '\e[92mDocker and Docker-Compose have been installed on the computer...\e[0m'
 	fi
 	echo ''
-	echo -e '\e[92mInstalling and configuring Docker-uAuditAnalyzer2...\e[0m'
+	echo -e '\e[92mStarting the Docker-uAuditAnalyzer2 installation...\e[0m'
 	echo ''
 	cp -r uauditanalyzer /etc
+	sleep 5
+ 	echo -e '\e[92mDocker-uAuditAnalyzer2 installed on your computer...\e[0m'
+        echo ''
+	echo -e '\e[92mStarting the Docker-uAuditAnalyzer2 configuration...\e[0m'
+        echo ''
 	while [ true ]; do
 		echo 'Enter the IP address where uAuditAnalyzer will send the logs:'
 		read ip
@@ -101,6 +112,48 @@ if [ $opc = "Y" ] || [ $opc = "y" ]; then
 	echo ''
         aux4="s/port_web/$port_web/g"
         sed -i $aux4 /etc/uauditanalyzer/docker-compose.yml
+        while [ true ]; do
+                echo 'Enter the port that will be used to send the Telegram alerts:'
+                read port_tel
+                if [[ $port_tel =~ $reg_exp_port ]]; then
+                        break
+                else
+                        echo -e '\e[0;31mEnter a valid port\e[0m'
+                        echo ''
+                fi
+        done
+ 	echo ''
+        aux5="s/port_tel/$port_tel/g"
+        sed -i $aux5 /etc/uauditanalyzer/docker-compose.yml
+	while [ true ]; do
+		echo 'Enter the Bot Token where the telegram alerts are sent:'
+		read bot_token
+		if [[ -z $bot_token ]]; then
+			echo -e '\e[0;31mEnter a value\e[0m'
+                        echo ''
+		else
+			break
+		fi
+
+	done
+	echo ''
+	aux6="s/bottoken/$bot_token/g"
+	sed -i $aux6 /etc/uauditanalyzer/uanlz_alert/sendmsg.sh
+	while [ true ]; do
+                echo 'Enter the chat id  to which the alerts will be sent to Telegram:'
+                read chat_id
+                if [[ -z $chat_id ]]; then
+                        echo -e '\e[0;31mEnter a value\e[0m'
+                        echo ''
+                else
+                        break
+                fi
+
+        done
+        echo ''
+        aux7="s/chatid/$chat_id/g"
+        sed -i $aux7 /etc/uauditanalyzer/uanlz_alert/sendmsg.sh
+	echo -e '\e[92mThe Docker-uAuditAnalyzer2 configuration is complete...\e[0m'
 	sleep 5
 	echo ''
 	echo -e '\e[92mCreating API Keys necessary for the operation of the application...\e[0m'
@@ -114,7 +167,9 @@ if [ $opc = "Y" ] || [ $opc = "y" ]; then
 	sed -i  $aux_3 /etc/uauditanalyzer/uanlz_web/config.ini
 	sleep 5
 	echo ''
-	echo -e '\e[92mInstallation and configuration of Docker-uAuditAnalyzer2 completed successfully...\e[0m'
+	echo -e '\e[92mDocker-uAuditAnalyzer2 installation completed...\e[0m'
+	sleep 5
+	clear
 else
 	clear
 	exit

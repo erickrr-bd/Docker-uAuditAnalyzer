@@ -11,7 +11,9 @@ services:
     depends_on:
       - uanlz_web
   uanlz_alert:
-     image: d0ck3rt3k1umhub/uanlz_alert
+     image: d0ck3rt3k1umhub/uanlz_alert:latest
+     ports:
+      - port_tel:80
      volumes:
        - /etc/uauditanalyzer/uanlz_alert:/etc/uauditanalyzer/uanlz_alert
      depends_on:
