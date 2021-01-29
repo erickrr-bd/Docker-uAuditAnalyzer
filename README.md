@@ -6,7 +6,7 @@ License: GPLv3
 
 Commercial Support
 
-Tekium
+![Tekium](https://github.com/unmanarc/uAuditAnalyzer2/blob/master/art/tekium_slogo.jpeg)
 
 Tekium is a cybersecurity startup specialized in red team and blue team activities based in Mexico, it has several important clients in the financial sector around the world.
 
