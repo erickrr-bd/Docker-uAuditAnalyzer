@@ -1,6 +1,8 @@
 # Docker-uAuditAnalyzer2
 
-Author: Erick Rodríguez erickrr.tbd93@gmail.com
+Author: Erick Rodríguez 
+
+Email: erodriguez@tekium.mx, erickrr.tbd93@gmail.com
 
 License: GPLv3
 
